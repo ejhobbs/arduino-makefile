@@ -3,8 +3,9 @@ MODEL := atmega328p
 PROG := arduino
 RATE := 115200
 OUT := compiled
+SOURCEDIR := .
 
-SRC_FILES=led.c flash.c
+SRC_FILES := $(shell find $(SOURCEDIR) -name '*.c')
 OBJ_FILES=$(SRC_FILES:.c=.o)
 
 backup:
