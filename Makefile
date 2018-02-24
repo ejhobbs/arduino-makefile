@@ -4,7 +4,7 @@ PROG := arduino
 RATE := 115200
 OUT := compiled
 
-SRC_FILES=led.c
+SRC_FILES=led.c flash.c
 OBJ_FILES=$(SRC_FILES:.c=.o)
 
 backup:
@@ -12,12 +12,14 @@ backup:
 restore:
 	avrdude -F -V -c $(PROG) -p $(MODEL) -P $(PORT) -b $(RATE) -U flash:w:flash_backup.hex
 
-flash:
-	avrdude -F -V -c $(PROG) -p $(MODEL) -P $(PORT) -b $(RATE) -U flash:w:$(OUT)
+flash: copy
+	avrdude -F -V -c $(PROG) -p $(MODEL) -P $(PORT) -b $(RATE) -U flash:w:$(OUT).hex
 
 compile: $(OBJ_FILES)
 link: compile
 	avr-gcc -mmcu=$(MODEL) $(OBJ_FILES) -o $(OUT)
+copy: link
+	avr-objcopy -O ihex -R .eeprom $(OUT) $(OUT).hex
 
 %.o:%.c # Compile all source files
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MODEL) -c $< -o $@
