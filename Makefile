@@ -22,5 +22,9 @@ link: compile
 copy: link
 	avr-objcopy -O ihex -R .eeprom $(OUT) $(OUT).hex
 
+clean: 
+	rm *.o
+	rm $(OUT)*
+
 %.o:%.c # Compile all source files
 	avr-gcc -Os -DF_CPU=16000000UL -mmcu=$(MODEL) -c $< -o $@
